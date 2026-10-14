@@ -1,0 +1,4 @@
+{% extends 'onlinecourse/base.html' %}
+{% block title %}Courses | OnlineCourse{% endblock %}
+{% block content %}<div class="hero p-5 mb-5"><div class="text-uppercase opacity-75 small fw-semibold mb-2">Learn by doing</div><h1 class="display-5 fw-bold">Your learning starts here.</h1><p class="mb-0 opacity-75">Explore a course and complete its assessment.</p></div>
+<div class="row g-4">{% for course in courses %}<div class="col-md-6"><div class="card p-4 h-100"><h3>{{ course.name }}</h3><p class="text-secondary">{{ course.description|truncatewords:35 }}</p><a href="{% url 'onlinecourse:course_details' course.pk %}" class="btn btn-primary mt-auto align-self-start">View course →</a></div></div>{% empty %}<p>No courses available. Run the demo seed command.</p>{% endfor %}</div>{% endblock %}
