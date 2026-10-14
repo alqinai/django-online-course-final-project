@@ -1,0 +1,10 @@
+{% extends 'onlinecourse/base.html' %}
+{% block title %}{{ course.name }} | OnlineCourse{% endblock %}
+{% block content %}<div class="hero p-5 mb-4"><div class="text-uppercase small opacity-75 mb-2">Course overview</div><h1 class="fw-bold">{{ course.name }}</h1><p class="mb-0 opacity-75">{{ course.description }}</p></div>
+<h2 class="h4 mb-3">Course lessons</h2>
+{% for lesson in lessons %}<div class="card p-4 mb-3"><span class="small text-secondary">Lesson {{ forloop.counter }}</span><h3 class="h5 fw-bold">{{ lesson.title }}</h3><p class="text-secondary mb-0">{{ lesson.content }}</p></div>{% empty %}<p>This course has no lessons yet.</p>{% endfor %}
+<h2 class="h4 mt-5 mb-3">Course assessment</h2><div class="card p-4"><form action="{% url 'onlinecourse:submit' course.pk %}" method="post">{% csrf_token %}
+{% for lesson in lessons %}{% for question in lesson.questions.all %}<fieldset class="mb-4"><legend class="h6 fw-semibold mb-3">{{ forloop.parentloop.counter }}.{{ forloop.counter }} {{ question.question_text }} <span class="text-secondary fw-normal">({{ question.grade }} point{{ question.grade|pluralize }})</span></legend>
+{% for choice in question.choices.all %}<div class="form-check mb-2"><input class="form-check-input" type="radio" id="choice-{{ choice.pk }}" name="question_{{ question.pk }}" value="{{ choice.pk }}" required><label class="form-check-label" for="choice-{{ choice.pk }}">{{ choice.choice_text }}</label></div>{% endfor %}</fieldset>{% endfor %}{% endfor %}
+{% if user.is_authenticated %}<button class="btn btn-primary btn-lg">Submit exam</button>{% else %}<p class="text-muted">Log in to submit your assessment.</p><a class="btn btn-primary" href="/admin/login/?next={{ request.path|urlencode }}">Log in</a>{% endif %}
+</form></div>{% endblock %}
